@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="description"
+        content="ab9st8—informal linguistics, oblivious poetry, music of the air and everything in between.">
+
+    <link rel="icon" type="image/svg+xml" href="public/favicon.svg">
+    <!-- fallback -->
+    <link rel="apple-touch-icon" sizes="180x180" href="public/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="public/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="public/favicon-16x16.png">
+    <!-- fallback -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ysabeau+Office:ital,wght@0,400;0,700;1,400;1,700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sorts+Mill+Goudy:ital,wght@0,400;0,700;1,400;1,700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400&display=swap">
+    
+
+    <link rel="stylesheet" href="public/index.css" />
+    <title>loading... :: ab9st8</title>
+</head>
+<body>
+    <a href="/ab9st8">
+        <picture>
+            <source srcset="public/icon_dark.png" media="(prefers-color-scheme: light)">
+            <img id="home" src="public/icon_light.png" alt="ab9st8 logo" width="100px" height="100px">
+        </picture>
+    </a>
+
+    <script>
+        const appendHTML = html => document.body.innerHTML += html;
+
+        const search = document.location.search;
+        const id = (new URLSearchParams(search)).get("id");
+        fetch(`./articles/${id}`)
+            .then(async response => await response.text())
+            .then(data => {
+                const [title, desc, author, date, ...lines] = data.split("\n");
+                let res = "";
+
+                // title and date
+                res += `<h1>${title}</h1>`;
+                if (desc != "") res += `<h2>${desc}</h2>`;
+                res += `<div class="desc"><span class="secondary">by</span> ${author} <span class="secondary">on ${date}.</span></div>`;
+                
+                // paragraphs
+                res += `<p class="content">`;
+                for (const line of lines) {
+                    if (line === "") res += `</p><p class="content">`;
+                    else res += `${line}<br />&emsp;`;
+                }
+                res += `</p>`;
+                
+                // italics
+                res = res.replaceAll("|>", `<em>`);
+                res = res.replaceAll("<|", `</em>`)
+                
+                // finishing up
+                appendHTML(res);
+                appendHTML(`<footer style="height:2em"></footer>`);
+                document.title = `${title} :: ab9st8`; // doing this earlier could probably look awkward in some outlandish cases
+            })
+            .catch(err => appendHTML(`
+                <div class="desc" style="color:rgb(255,0,0)">
+                    Oops! Something went wrong and the site couldn't fetch the article. Here's the error log:
+                </div>
+                <div class="desc" style="font-family:Source Code Pro;font-size:11pt">
+                    ${err}
+                </div>
+            `));
+     </script>
+</body>
+</html>

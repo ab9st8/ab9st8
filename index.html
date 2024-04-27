@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="description"
+        content="ab9st8—informal linguistics, oblivious poetry, music of the air and everything in between.">
+
+    <link rel="icon" type="image/svg+xml" href="public/favicon.svg">
+    <!-- fallback -->
+    <link rel="apple-touch-icon" sizes="180x180" href="public/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="public/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="public/favicon-16x16.png">
+    <!-- fallback -->
+        
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ysabeau+Office:ital,wght@0,400;0,700;1,400;1,700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400&display=swap">
+    
+    <link rel="stylesheet" type="text/css" href="public/index.css" />
+    <title>home :: ab9st8</title>
+</head>
+
+<body>
+    <a href="/ab9st8">
+        <picture>
+            <source srcset="public/icon_dark.png" media="(prefers-color-scheme: light)">
+            <img id="home" src="public/icon_light.png" alt="ab9st8 logo" width="100px" height="100px">
+        </picture>
+    </a>
+    <!-- <h1 class="title" id="index-title">ab9st8</h1> -->
+
+	<p class="desc">
+		Lighthearted writings about intriguing
+        matters&mdash;including but not limited to linguistics,
+        programming, and just everyday life.
+	</p>
+
+    <p class="desc">Also, <a target="_blank" href="https://ab9st8.bandcamp.com">music!</a></p>
+
+	<p class="desc">
+		You are free to read, download, and/or repost any 
+        piece of writing from here to anywhere you like,
+        as long as you don't modify and then repost it.
+	</p>
+
+    <script>
+        const appendHTML = html => document.body.innerHTML += html;
+        fetch('./articles/data.json')
+            .then(async response => await response.json())
+            .then(data => {
+                for (const article of data) {
+                    appendHTML(`
+                        <a class="article" href="./read?id=${article.code}">
+                            <div style="flex: 1" >
+                                <div class="article-code">${article.code}</div>
+                                <div class="article-author">${article.author}</div>
+                                <div class="article-title">${article.title}</div>
+                                <div class="article-description">${article.description}. <span class="secondary">${article.date}. ${article.language}.</span></div>
+                            </div>
+                        </a>
+                    `);
+                }
+                appendHTML(`<footer style="height:2em"></footer>`);
+            })
+            .catch(err => appendHTML(`
+                <div class="desc" style="color:rgb(255,0,0)">
+                    Whoops! Something went wrong and the site couldn't fetch the articles. Here's the error log:
+                </div>
+                <div class="desc" style="font-family:Source Code Pro;font-size:11px">
+                    ${err}
+                </div>
+            `));
+    </script>
+</body>
+
+</html>
